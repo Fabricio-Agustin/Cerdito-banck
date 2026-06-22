@@ -1,0 +1,167 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --rosa:#FF9999;
+    --rosa-claro:#FDEAEA;
+    --negro:#222222;
+    --blanco:#ffffff;
+}
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background:var(--rosa);
+    overflow:hidden;
+}
+
+.container{
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+
+    background:var(--rosa);
+}
+
+.center_container{
+    width:100%;
+    max-width:700px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    gap:25px;
+
+    background:var(--rosa-claro);
+
+    padding:50px;
+
+    border-radius:24px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.logo_container img{
+    width:140px;
+    height:auto;
+}
+
+.logo_container h1{
+    color:var(--negro);
+    font-size:3.2rem;
+    font-weight:800;
+    margin-top:10px;
+}
+
+.logo_container p{
+    color:#444;
+    font-size:1.1rem;
+    margin-top:10px;
+    line-height:1.6;
+}
+
+/* BOTÓN */
+
+.learn-more{
+    position:relative;
+    width:220px;
+    height:56px;
+    text-decoration:none;
+}
+
+.learn-more .circle{
+    position:relative;
+    display:block;
+
+    width:56px;
+    height:56px;
+
+    border-radius:50px;
+    background:var(--rosa);
+
+    transition:.4s ease;
+}
+
+.learn-more:hover .circle{
+    width:100%;
+}
+
+.learn-more .icon{
+    position:absolute;
+    top:0;
+    bottom:0;
+    margin:auto;
+}
+
+.learn-more .arrow{
+    left:18px;
+    width:18px;
+    height:2px;
+}
+
+.learn-more .arrow::before{
+    content:"";
+
+    position:absolute;
+    top:-5px;
+    right:0;
+
+    width:10px;
+    height:10px;
+
+    border-top:2px solid white;
+    border-right:2px solid white;
+
+    transform:rotate(45deg);
+}
+
+.learn-more .button-text{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:var(--negro);
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+/* REDES */
+
+.social_container{
+    display:flex;
+    gap:20px;
+}
+
+.social_container i{
+    color:var(--negro);
+    font-size:1.6rem;
+}
+
+@media(max-width:768px){
+
+    .center_container{
+        padding:35px 20px;
+    }
+
+    .logo_container h1{
+        font-size:2.3rem;
+    }
+
+    .logo_container p{
+        font-size:.95rem;
+    }
+}

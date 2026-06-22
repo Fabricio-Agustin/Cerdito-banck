@@ -1,0 +1,331 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --rosa:#FF9999;
+    --rosa-claro:#FFECEC;
+    --rosa-hover:#FF8A8A;
+    --blanco:#FFFFFF;
+    --negro:#1F1F1F;
+    --gris:#777777;
+    --fondo:#FFF7F7;
+    --borde:#F1DADA;
+}
+
+body{
+    font-family:'Montserrat',sans-serif;
+    background:var(--fondo);
+    color:var(--negro);
+}
+
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:white;
+    border-right:1px solid var(--borde);
+
+    padding:30px 20px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:40px;
+}
+
+.brand i{
+    font-size:2rem;
+    color:var(--rosa);
+}
+
+.brand h2{
+    color:var(--rosa);
+    font-size:1.4rem;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.menu a{
+    text-decoration:none;
+    color:var(--negro);
+
+    padding:15px;
+
+    border-radius:12px;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    font-weight:500;
+}
+
+.menu a.active{
+    background:var(--rosa);
+    color:white;
+}
+
+#logoutBtn{
+    border:none;
+
+    background:var(--rosa);
+
+    color:white;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+/* CONTENIDO */
+
+.content{
+    flex:1;
+    padding:40px;
+}
+
+.topbar{
+    margin-bottom:30px;
+}
+
+.topbar h1{
+    font-size:2rem;
+    margin-bottom:8px;
+}
+
+.topbar p{
+    color:var(--gris);
+}
+
+/* RESUMEN */
+
+.top-section{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+
+    margin-bottom:25px;
+}
+
+.balance-card{
+    background:var(--rosa);
+
+    color:white;
+
+    border-radius:25px;
+
+    padding:35px;
+
+    min-height:250px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.card-label{
+    font-size:.95rem;
+    opacity:.9;
+}
+
+.balance-card h2{
+    font-size:3rem;
+    font-weight:800;
+}
+
+.bank-data{
+    display:flex;
+    gap:40px;
+}
+
+.bank-data small{
+    display:block;
+    margin-bottom:6px;
+}
+
+.bank-data span{
+    font-weight:600;
+}
+
+.actions-card{
+    background:white;
+
+    border-radius:25px;
+
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.actions-card button{
+    border:none;
+
+    background:var(--rosa-claro);
+
+    padding:18px;
+
+    border-radius:15px;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    color:var(--negro);
+}
+
+.actions-card button i{
+    color:var(--rosa);
+}
+
+/* TRANSFERENCIA */
+
+.transfer-card{
+    background:white;
+
+    border-radius:25px;
+
+    padding:30px;
+
+    margin-bottom:25px;
+}
+
+.transfer-card h2{
+    margin-bottom:20px;
+}
+
+#transferForm{
+    display:grid;
+    grid-template-columns:1fr 220px 200px;
+    gap:15px;
+}
+
+#transferForm input{
+    padding:16px;
+
+    border:1px solid var(--borde);
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-family:inherit;
+}
+
+#transferForm button{
+    border:none;
+
+    background:var(--rosa);
+
+    color:white;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+/* MOVIMIENTOS */
+
+.movements-card{
+    background:white;
+
+    border-radius:25px;
+
+    padding:30px;
+}
+
+.movements-card h2{
+    margin-bottom:20px;
+}
+
+#movimientos{
+    list-style:none;
+}
+
+#movimientos li{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 0;
+
+    border-bottom:1px solid #f2f2f2;
+}
+
+.ingreso{
+    color:#2E7D32;
+    font-weight:700;
+}
+
+.egreso{
+    color:#C62828;
+    font-weight:700;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+    .top-section{
+        grid-template-columns:1fr;
+    }
+
+    #transferForm{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:768px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid var(--borde);
+    }
+
+    .content{
+        padding:20px;
+    }
+
+    .bank-data{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .balance-card h2{
+        font-size:2.2rem;
+    }
+}
