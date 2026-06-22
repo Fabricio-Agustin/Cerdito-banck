@@ -1,23 +1,32 @@
-import { getUsers } from "./storage.js";
+import { getUsers, saveUsers } from "./storage.js";
 
 const form = document.querySelector("form");
 
-form.addEventListener("submit", (e) => {
+const MAX_ATTEMPTS = 5;
 
-    e.preventDefault();
+form.addEventListener("submit", handleLogin);
 
-    const usuario = document
-        .getElementById("usuario")
-        .value
-        .trim();
+function handleLogin(event) {
 
-    const password = document
-        .getElementById("password")
-        .value
-        .trim();
+    event.preventDefault();
+
+    const usuario = getInputValue("usuario")
+        .toLowerCase();
+
+    const password = getInputValue("password");
 
     if (!usuario || !password) {
+
         alert("Completa todos los campos");
+        return;
+    }
+
+    if (isBlocked()) {
+
+        alert(
+            "Demasiados intentos. Intenta más tarde."
+        );
+
         return;
     }
 
@@ -30,17 +39,95 @@ form.addEventListener("submit", (e) => {
     );
 
     if (!user) {
-        alert("Usuario o contraseña incorrectos");
+
+        increaseAttempts();
+
+        alert(
+            "Usuario o contraseña incorrectos"
+        );
+
         return;
     }
+
+    resetAttempts();
+
+    updateLastLogin(user, users);
+
+    createSession(user);
+
+    alert(
+        `Bienvenido ${user.nombre}`
+    );
+
+    window.location.href =
+        "../dashboard/Dashboard.html";
+}
+
+function getInputValue(id) {
+
+    return document
+        .getElementById(id)
+        .value
+        .trim();
+}
+
+function createSession(user) {
 
     localStorage.setItem(
         "currentUser",
         JSON.stringify(user)
     );
 
-    alert(`Bienvenido ${user.nombre}`);
+    localStorage.setItem(
+        "loginTime",
+        Date.now()
+    );
+}
 
-    window.location.href =
-        "../dashboard/Dashboard.html";
-});
+function updateLastLogin(user, users) {
+
+    const index = users.findIndex(
+        current => current.id === user.id
+    );
+
+    if (index === -1) return;
+
+    users[index].lastLogin =
+        new Date().toISOString();
+
+    saveUsers(users);
+}
+
+function increaseAttempts() {
+
+    const attempts =
+        Number(
+            localStorage.getItem(
+                "loginAttempts"
+            )
+        ) || 0;
+
+    localStorage.setItem(
+        "loginAttempts",
+        attempts + 1
+    );
+}
+
+function resetAttempts() {
+
+    localStorage.removeItem(
+        "loginAttempts"
+    );
+}
+
+function isBlocked() {
+
+    const attempts =
+        Number(
+            localStorage.getItem(
+                "loginAttempts"
+            )
+        ) || 0;
+
+    return attempts >= MAX_ATTEMPTS;
+}
