@@ -1,227 +1,355 @@
-import { getUsers, saveUsers } from "../logic/storage.js";
+import {
+    getUsers,
+    saveUsers
+} from "../logic/storage.js";
 
-const MOVEMENT_TYPES = {
-    CREATED: "ALTA_CUENTA",
-    RECEIVED: "TRANSFERENCIA_RECIBIDA",
-    SENT: "TRANSFERENCIA_ENVIADA"
-};
-
-const currentUser = getCurrentUser();
+const currentUser =
+    JSON.parse(
+        localStorage.getItem("currentUser")
+    );
 
 if (!currentUser) {
-    redirectToLogin();
+
+    window.location.href =
+        "../login/Login.html";
 }
 
-const elements = {
-    welcome: document.getElementById("welcomeMessage"),
-    saldo: document.getElementById("saldo"),
-    cvu: document.getElementById("cvu"),
-    cbu: document.getElementById("cbu"),
-    movimientos: document.getElementById("movimientos"),
-    transferForm: document.getElementById("transferForm"),
-    logoutBtn: document.getElementById("logoutBtn")
-};
+const welcomeMessage =
+    document.getElementById(
+        "welcomeMessage"
+    );
+
+const saldo =
+    document.getElementById(
+        "saldo"
+    );
+
+const cvu =
+    document.getElementById(
+        "cvu"
+    );
+
+const usersList =
+    document.getElementById(
+        "usersList"
+    );
+
+const movimientos =
+    document.getElementById(
+        "movimientos"
+    );
+
+const userSelect =
+    document.getElementById(
+        "userSelect"
+    );
 
 init();
 
 function init() {
+
     loadDashboard();
 
-    elements.transferForm.addEventListener(
-        "submit",
-        handleTransfer
-    );
+    document
+        .getElementById("showTransfer")
+        .addEventListener(
+            "click",
+            () => showSection(
+                "transferSection"
+            )
+        );
 
-    elements.logoutBtn.addEventListener(
-        "click",
-        logout
-    );
+    document
+        .getElementById("showUsers")
+        .addEventListener(
+            "click",
+            () => {
+                showSection(
+                    "usersSection"
+                );
+
+                renderUsers();
+            }
+        );
+
+    document
+        .getElementById("showMovements")
+        .addEventListener(
+            "click",
+            () => {
+                showSection(
+                    "movementsSection"
+                );
+
+                renderMovements();
+            }
+        );
+
+    document
+        .getElementById("transferForm")
+        .addEventListener(
+            "submit",
+            transferMoney
+        );
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener(
+            "click",
+            logout
+        );
 }
 
 function loadDashboard() {
 
-    const user = findCurrentUser();
+    const user =
+        getCurrentUserData();
 
-    if (!user) {
-        logout();
-        return;
-    }
+    welcomeMessage.textContent =
+        `Hola ${user.nombre}`;
 
-    elements.welcome.textContent = `Hola, ${user.nombre}`;
+    saldo.textContent =
+        formatMoney(
+            user.saldo
+        );
 
-    elements.saldo.textContent = formatMoney(user.saldo);
+    cvu.textContent =
+        user.cvu;
 
-    elements.cvu.textContent = user.cvu;
-
-    elements.cbu.textContent = user.cbu;
-
-    renderMovements(user.movimientos);
+    loadUserOptions();
 }
 
-function handleTransfer(event) {
+function loadUserOptions() {
+
+    const users =
+        getUsers();
+
+    const current =
+        getCurrentUserData();
+
+    userSelect.innerHTML =
+        `<option value="">
+            Seleccionar usuario
+        </option>`;
+
+    users
+        .filter(
+            user =>
+                user.id !== current.id
+        )
+        .forEach(user => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                user.cvu;
+
+            option.textContent =
+                `${user.usuario}`;
+
+            userSelect.appendChild(
+                option
+            );
+        });
+}
+
+function transferMoney(event) {
 
     event.preventDefault();
 
-    const cvuDestino =
-        document
-            .getElementById("cvuDestino")
-            .value
-            .trim();
+    const destination =
+        userSelect.value;
 
-    const monto = Number(
-        document
-            .getElementById("monto")
-            .value
-    );
+    const amount =
+        Number(
+            document
+                .getElementById("monto")
+                .value
+        );
 
-    if (!isValidTransfer(cvuDestino, monto)) {
-        alert("Datos inválidos");
+    if (
+        !destination ||
+        amount <= 0
+    ) {
         return;
     }
 
-    const users = getUsers();
+    const users =
+        getUsers();
 
-    const sender = users.find(
-        user => user.id === currentUser.id
-    );
+    const sender =
+        users.find(
+            user =>
+                user.id ===
+                currentUser.id
+        );
 
-    const receiver = users.find(
-        user => user.cvu === cvuDestino
-    );
+    const receiver =
+        users.find(
+            user =>
+                user.cvu ===
+                destination
+        );
 
     if (!receiver) {
-        alert("CVU no encontrado");
+
+        alert(
+            "Usuario no encontrado"
+        );
+
         return;
     }
 
-    if (receiver.id === sender.id) {
-        alert("No puedes transferirte a ti mismo");
+    if (
+        sender.saldo < amount
+    ) {
+
+        alert(
+            "Saldo insuficiente"
+        );
+
         return;
     }
-
-    if (sender.saldo < monto) {
-        alert("Saldo insuficiente");
-        return;
-    }
-
-    executeTransfer(
-        sender,
-        receiver,
-        monto
-    );
-
-    saveUsers(users);
-
-    updateCurrentUser(sender);
-
-    elements.transferForm.reset();
-
-    alert(
-        `Transferencia enviada a ${receiver.usuario}`
-    );
-
-    loadDashboard();
-}
-
-function executeTransfer(
-    sender,
-    receiver,
-    amount
-) {
 
     sender.saldo -= amount;
+
     receiver.saldo += amount;
 
     sender.movimientos.unshift({
-        tipo: MOVEMENT_TYPES.SENT,
-        detalle: `Transferencia a ${receiver.usuario}`,
-        monto: amount,
-        fecha: getCurrentDate()
+        tipo:"EGRESO",
+        detalle:
+            `Transferencia a ${receiver.usuario}`,
+        monto:amount,
+        fecha:new Date()
+            .toLocaleString()
     });
 
     receiver.movimientos.unshift({
-        tipo: MOVEMENT_TYPES.RECEIVED,
-        detalle: `Transferencia de ${sender.usuario}`,
-        monto: amount,
-        fecha: getCurrentDate()
+        tipo:"INGRESO",
+        detalle:
+            `Transferencia de ${sender.usuario}`,
+        monto:amount,
+        fecha:new Date()
+            .toLocaleString()
     });
-}
 
-function renderMovements(movements) {
-
-    elements.movimientos.innerHTML = "";
-
-    if (!movements.length) {
-
-        elements.movimientos.innerHTML = `
-            <li class="empty-movement">
-                No hay movimientos registrados
-            </li>
-        `;
-
-        return;
-    }
-
-    movements.forEach(movement => {
-
-        const isIncome = movement.tipo === MOVEMENT_TYPES.RECEIVED ||
-        movement.tipo === MOVEMENT_TYPES.CREATED;
-
-        const li = document.createElement("li");
-
-        li.classList.add("movement-item");
-
-        li.innerHTML = `
-            <div>
-                <strong>${movement.detalle}</strong>
-                <small>${movement.fecha}</small>
-            </div>
-
-            <span class="${
-                isIncome
-                    ? "ingreso"
-                    : "egreso"
-            }">
-                ${isIncome ? "+" : "-"}
-                ${formatMoney(movement.monto)}
-            </span>
-        `;
-
-        elements.movimientos.appendChild(li);
-    });
-}
-
-function findCurrentUser() {
-
-    return getUsers().find(
-        user => user.id === currentUser.id
-    );
-}
-
-function getCurrentUser() {
-
-    return JSON.parse(
-        localStorage.getItem("currentUser")
-    );
-}
-
-function updateCurrentUser(user) {
+    saveUsers(users);
 
     localStorage.setItem(
         "currentUser",
-        JSON.stringify(user)
+        JSON.stringify(sender)
+    );
+
+    loadDashboard();
+
+    renderMovements();
+
+    event.target.reset();
+
+    alert(
+        "Transferencia realizada"
     );
 }
 
-function isValidTransfer(
-    cvu,
-    amount
-) {
+function renderUsers() {
 
-    return (
-        cvu.length > 0 &&
-        amount > 0 &&
-        !Number.isNaN(amount)
+    usersList.innerHTML = "";
+
+    getUsers()
+        .filter(
+            user =>
+                user.id !==
+                currentUser.id
+        )
+        .forEach(user => {
+
+            const li =
+                document.createElement(
+                    "li"
+                );
+
+            li.textContent =
+                `${user.nombre} ${user.apellido}`;
+
+            usersList.appendChild(
+                li
+            );
+        });
+}
+
+function renderMovements() {
+
+    movimientos.innerHTML = "";
+
+    const user =
+        getCurrentUserData();
+
+    user.movimientos.forEach(
+        movement => {
+
+            const li =
+                document.createElement(
+                    "li"
+                );
+
+            const ingreso =
+                movement.tipo ===
+                "INGRESO";
+
+            li.innerHTML = `
+                <span>
+                    ${movement.detalle}
+                </span>
+
+                <span class="${
+                    ingreso
+                    ? "ingreso"
+                    : "egreso"
+                }">
+                    ${
+                        ingreso
+                        ? "+"
+                        : "-"
+                    }
+                    ${formatMoney(
+                        movement.monto
+                    )}
+                </span>
+            `;
+
+            movimientos.appendChild(
+                li
+            );
+        }
+    );
+}
+
+function showSection(id) {
+
+    document
+        .querySelectorAll(".panel")
+        .forEach(section =>
+            section.classList.add(
+                "hidden"
+            )
+        );
+
+    document
+        .getElementById(id)
+        .classList.remove(
+            "hidden"
+        );
+}
+
+function getCurrentUserData() {
+
+    return getUsers().find(
+        user =>
+            user.id ===
+            currentUser.id
     );
 }
 
@@ -230,16 +358,10 @@ function formatMoney(amount) {
     return new Intl.NumberFormat(
         "es-AR",
         {
-            style: "currency",
-            currency: "ARS"
+            style:"currency",
+            currency:"ARS"
         }
     ).format(amount);
-}
-
-function getCurrentDate() {
-
-    return new Date()
-        .toLocaleString("es-AR");
 }
 
 function logout() {
@@ -247,11 +369,6 @@ function logout() {
     localStorage.removeItem(
         "currentUser"
     );
-
-    redirectToLogin();
-}
-
-function redirectToLogin() {
 
     window.location.href =
         "../login/Login.html";

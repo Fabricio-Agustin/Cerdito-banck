@@ -6,326 +6,197 @@
 
 :root{
     --rosa:#FF9999;
-    --rosa-claro:#FFECEC;
     --rosa-hover:#FF8A8A;
+    --rosa-claro:#FFF4F4;
     --blanco:#FFFFFF;
-    --negro:#1F1F1F;
+    --negro:#222222;
     --gris:#777777;
-    --fondo:#FFF7F7;
-    --borde:#F1DADA;
 }
 
 body{
     font-family:'Montserrat',sans-serif;
-    background:var(--fondo);
-    color:var(--negro);
+    background:var(--rosa-claro);
 }
 
-.layout{
-    display:flex;
-    min-height:100vh;
+.dashboard{
+    max-width:1000px;
+    margin:auto;
+    padding:30px;
 }
 
-/* SIDEBAR */
-
-.sidebar{
-    width:260px;
-    background:white;
-    border-right:1px solid var(--borde);
-
-    padding:30px 20px;
-
+.header{
     display:flex;
-    flex-direction:column;
     justify-content:space-between;
-}
-
-.brand{
-    display:flex;
     align-items:center;
-    gap:12px;
-    margin-bottom:40px;
+    margin-bottom:25px;
 }
 
-.brand i{
-    font-size:2rem;
-    color:var(--rosa);
-}
-
-.brand h2{
-    color:var(--rosa);
-    font-size:1.4rem;
-}
-
-.menu{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.menu a{
-    text-decoration:none;
+.header h1{
     color:var(--negro);
-
-    padding:15px;
-
-    border-radius:12px;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    font-weight:500;
 }
 
-.menu a.active{
-    background:var(--rosa);
-    color:white;
+.header p{
+    color:var(--gris);
 }
 
 #logoutBtn{
+    width:50px;
+    height:50px;
+
     border:none;
+
+    border-radius:12px;
 
     background:var(--rosa);
 
     color:white;
-
-    padding:14px;
-
-    border-radius:12px;
-
-    font-weight:600;
 
     cursor:pointer;
 }
 
-/* CONTENIDO */
-
-.content{
-    flex:1;
-    padding:40px;
-}
-
-.topbar{
-    margin-bottom:30px;
-}
-
-.topbar h1{
-    font-size:2rem;
-    margin-bottom:8px;
-}
-
-.topbar p{
-    color:var(--gris);
-}
-
-/* RESUMEN */
-
-.top-section{
-    display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:25px;
-
-    margin-bottom:25px;
-}
-
-.balance-card{
+.account-card{
     background:var(--rosa);
 
     color:white;
 
     border-radius:25px;
 
-    padding:35px;
+    padding:30px;
 
-    min-height:250px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    margin-bottom:25px;
 }
 
-.card-label{
-    font-size:.95rem;
-    opacity:.9;
-}
-
-.balance-card h2{
+.account-card h2{
     font-size:3rem;
-    font-weight:800;
+    margin:10px 0;
 }
 
-.bank-data{
-    display:flex;
-    gap:40px;
+.account-info{
+    margin-top:20px;
 }
 
-.bank-data small{
-    display:block;
-    margin-bottom:6px;
+.account-info p{
+    font-weight:700;
 }
 
-.bank-data span{
-    font-weight:600;
-}
-
-.actions-card{
-    background:white;
-
-    border-radius:25px;
-
-    padding:25px;
-
-    display:flex;
-    flex-direction:column;
+.actions{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
     gap:15px;
+    margin-bottom:25px;
 }
 
-.actions-card button{
+.actions button{
     border:none;
 
-    background:var(--rosa-claro);
+    background:white;
 
     padding:18px;
 
     border-radius:15px;
 
-    display:flex;
-    align-items:center;
-    gap:12px;
-
     font-weight:600;
 
     cursor:pointer;
 
-    color:var(--negro);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
 }
 
-.actions-card button i{
+.actions button i{
     color:var(--rosa);
 }
 
-/* TRANSFERENCIA */
-
-.transfer-card{
+.panel{
     background:white;
 
-    border-radius:25px;
+    border-radius:20px;
 
-    padding:30px;
+    padding:25px;
 
-    margin-bottom:25px;
-}
-
-.transfer-card h2{
     margin-bottom:20px;
 }
 
+.panel h3{
+    margin-bottom:20px;
+}
+
+.hidden{
+    display:none;
+}
+
 #transferForm{
-    display:grid;
-    grid-template-columns:1fr 220px 200px;
+    display:flex;
+    flex-direction:column;
     gap:15px;
 }
 
+#transferForm select,
 #transferForm input{
-    padding:16px;
+    padding:15px;
 
-    border:1px solid var(--borde);
+    border:1px solid #ddd;
 
     border-radius:12px;
 
     outline:none;
-
-    font-family:inherit;
 }
 
 #transferForm button{
     border:none;
 
+    padding:15px;
+
+    border-radius:12px;
+
     background:var(--rosa);
 
     color:white;
-
-    border-radius:12px;
 
     font-weight:700;
 
     cursor:pointer;
 }
 
-/* MOVIMIENTOS */
-
-.movements-card{
-    background:white;
-
-    border-radius:25px;
-
-    padding:30px;
-}
-
-.movements-card h2{
-    margin-bottom:20px;
-}
-
+#usersList,
 #movimientos{
     list-style:none;
 }
 
+#usersList li,
 #movimientos li{
     display:flex;
     justify-content:space-between;
-    align-items:center;
 
-    padding:18px 0;
+    padding:15px 0;
 
-    border-bottom:1px solid #f2f2f2;
+    border-bottom:1px solid #eee;
 }
 
 .ingreso{
-    color:#2E7D32;
+    color:green;
     font-weight:700;
 }
 
 .egreso{
-    color:#C62828;
+    color:red;
     font-weight:700;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1000px){
-
-    .top-section{
-        grid-template-columns:1fr;
-    }
-
-    #transferForm{
-        grid-template-columns:1fr;
-    }
 }
 
 @media(max-width:768px){
 
-    .layout{
-        flex-direction:column;
+    .actions{
+        grid-template-columns:1fr;
     }
 
-    .sidebar{
-        width:100%;
-        border-right:none;
-        border-bottom:1px solid var(--borde);
+    .dashboard{
+        padding:15px;
     }
 
-    .content{
-        padding:20px;
-    }
-
-    .bank-data{
-        flex-direction:column;
-        gap:15px;
-    }
-
-    .balance-card h2{
+    .account-card h2{
         font-size:2.2rem;
     }
+
 }
